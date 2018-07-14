@@ -58,7 +58,7 @@ jobs:
 
     - stage: build
       env:
-        - MAVEN_OPTS="-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml"
+        - MAVEN_OPTS="-Xmx$REQUIRED_HEAP -DskipTests=$SKIP_TESTS -Dmaven.javadoc.skip=$SKIP_JAVADOC -Dlogback.configurationFile=logback-travis.xml"
       script:
         - "mvn clean install"
 
