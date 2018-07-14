@@ -32,10 +32,9 @@ env:
     - SONAR_HOST_URL=https://sonarcloud.io
 
 stages:
-  - rampupcache
   - prepare
   - compile
-  - sonarcloud
+  - dast
 #  - test
 #  - coverage
 #
@@ -49,17 +48,9 @@ jobs:
 
 ######################################################################################################
 
-    - stage: rampupcache
-      env:
-        #- MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
+    - stage: prepare
       script:
         - "mvn dependency:resolve-plugins"
-
-######################################################################################################
-
-    - stage: prepare
-      env:
-        #- MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
       script:
         - "mvn clean"
 
@@ -79,6 +70,7 @@ jobs:
 #        - MAVEN_OPTS=-Xmx1024m -Dlogback.configurationFile=logback-travis.xml
 #      script:
 #        - "mvn test"
+
 #    - stage: coverage
 #      env:
 #        - MAVEN_OPTS=-Xmx1024m -Dlogback.configurationFile=logback-travis.xml -Dcoverage.port=random -Dcoverage.securePort=random
@@ -87,7 +79,7 @@ jobs:
 
 ######################################################################################################
 
-    - stage: sonarcloud
+    - stage: dast
       env:
         - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
       script:
