@@ -35,6 +35,7 @@ stages:
   - rampupcache
   - prepare
   - compile
+  - sonarcloud
 #  - test
 #  - coverage
 #
