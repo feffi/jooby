@@ -22,20 +22,14 @@ jdk:
   #- export MAVEN_OPTS="-Dlogback.configurationFile=../../build/logback-travis.xml ${MAVEN_OPTS}"
   #- export MAVEN_OPTS="-Dcoverage.port=random ${MAVEN_OPTS}"
   #- export MAVEN_OPTS="-Dcoverage.securePort=random ${MAVEN_OPTS}"
-  #- export MAVEN_OPTS="-Dsonar.host.url=https://sonarcloud.io ${MAVEN_OPTS}"
-  #- export MAVEN_OPTS="-Dsonar.branch.name=${TRAVIS_BRANCH} ${MAVEN_OPTS}"
 
-addons:
-  sonarcloud:
-    organization: $SONAR_ORGANIZATION
-    token: $SONAR_TOKEN
 
 env:
   global:
     - REQUIRED_HEAP=1024m
     - SKIP_TESTS=true
     - SKIP_JAVADOC=true
-
+    - SONAR_HOST_URL=https://sonarcloud.io
 
 stages:
   - rampupcache
@@ -89,11 +83,18 @@ jobs:
 #        - MAVEN_OPTS=-Xmx1024m -Dlogback.configurationFile=logback-travis.xml -Dcoverage.port=random -Dcoverage.securePort=random
 #      script:
 #        - mvn -q coveralls:report -P coverage
-#    - stage: static analyis
-#          env:
-#            - MAVEN_OPTS=-Dsonar.organization=jooby-project -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=
-#          script:
-#            - "mvn sonar:sonar"
+
+######################################################################################################
+
+    - stage: sonarcloud
+          env:
+            - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL}
+          script:
+            - "mvn -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
+          addons:
+            sonarcloud:
+              organization: $SONAR_ORGANIZATION
+              token: $SONAR_TOKEN
 
 #branches:
 #  only:
