@@ -52,7 +52,7 @@ jobs:
       env:
         - MAVEN_OPTS=-Xmx1024m -DskipTests=true -Dmaven.javadoc.skip=true -Dlogback.configurationFile=logback-travis.xml
       script:
-        - "mvn clean install"
+        - "mvn -q clean install"
 
 ######################################################################################################
 
@@ -75,7 +75,7 @@ jobs:
       env:
         - MAVEN_OPTS=-Xmx1024m -Dsonar.branch.name=$TRAVIS_BRANCH -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORGANIZATION
       script:
-        - "mvn -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
+        - "mvn -q -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
 
     # Dependency check (snyk)
     - stage: Static Application Sourcecode Analysis
