@@ -1,12 +1,10 @@
 language: java
+dist: trusty
 
 cache:
   directories:
     - '$HOME/.m2'
     - '$HOME/.sonar/cache'
-
-before_install:
-  - export MAVEN_OPTS=-Xmx1024m
 
 jdk:
   - oraclejdk8
@@ -46,17 +44,25 @@ jdk:
 #          script:
 #            - "mvn sonar:sonar"
 
-branches:
-  only:
-    - master
+#branches:
+#  only:
+#    - master
 
-script:
-  - ./build/travis.sh
+before_install:
+  - export MAVEN_OPTS="-Xmx1024m"
+  - export MAVEN_OPTS="-Dlogback.configurationFile=../../build/logback-travis.xml ${MAVEN_OPTS}"
+  - export MAVEN_OPTS="-Dcoverage.port=random ${MAVEN_OPTS}"
+  - export MAVEN_OPTS="-Dcoverage.securePort=random ${MAVEN_OPTS}"
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  # -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=master -Dsonar.projectVersion=${SONAR_VERSION}
 
 addons:
   sonarcloud:
-    organization: "jooby"
+    organization: $SONAR_ORGANIZATION
     token: $SONAR_TOKEN
+
+script:
+  - mvn -q -Dsonar.branch=${TRAVIS_BRANCH} clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar coveralls:report -P coverage
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
