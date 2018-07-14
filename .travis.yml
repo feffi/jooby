@@ -31,9 +31,10 @@ addons:
     token: $SONAR_TOKEN
 
 env:
-  - REQUIRED_HEAP=1024m
-  - SKIP_TESTS=true
-  - SKIP_JAVADOC=true
+  global:
+    - REQUIRED_HEAP=1024m
+    - SKIP_TESTS=true
+    - SKIP_JAVADOC=true
 
 
 stages:
