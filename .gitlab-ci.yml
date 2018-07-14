@@ -33,7 +33,7 @@ stages:
 build:maven:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -q -pl jooby -am -B package"
+  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -B package"
   artifacts:
     paths:
     - .
@@ -48,7 +48,7 @@ quality:codequality:
   stage: quality
   allow_failure: true
   script:
-    - mvn --batch-mode -q -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.branch.name=$CI_COMMIT_REF_NAME -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORGANIZATION
+    - mvn --batch-mode org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.branch.name=$CI_COMMIT_REF_NAME -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORGANIZATION
 
 ##########################################################
 # SECURITY
@@ -62,4 +62,5 @@ security:retirejs:
     - retire --path . --outputformat json --includemeta
   artifacts:
     paths:
-      - ./retire.js-report/
+    - .
+    expire_in: 1 week
