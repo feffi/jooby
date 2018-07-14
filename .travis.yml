@@ -53,7 +53,7 @@ before_install:
   - export MAVEN_OPTS="-Dlogback.configurationFile=../../build/logback-travis.xml ${MAVEN_OPTS}"
   - export MAVEN_OPTS="-Dcoverage.port=random ${MAVEN_OPTS}"
   - export MAVEN_OPTS="-Dcoverage.securePort=random ${MAVEN_OPTS}"
-
+  # -DskipTests=true -Dmaven.javadoc.skip=true
   # -Dsonar.host.url=https://sonarcloud.io -Dsonar.branch.name=master -Dsonar.projectVersion=${SONAR_VERSION}
 
 addons:
@@ -62,7 +62,9 @@ addons:
     token: $SONAR_TOKEN
 
 script:
-  - mvn -q -Dsonar.branch=${TRAVIS_BRANCH} clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar coveralls:report -P coverage
+  #- mvn -q -pl jooby -am -Dsonar.branch.name=${TRAVIS_BRANCH} clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar coveralls:report -P coverage
+ # mvn -Dsonar.login=fcff19dd0c924736522c14558e35bb96c326141b -Dsonar.organization=feffi-github -DskipTests=true -Dmaven.javadoc.skip=true -pl jooby -am -Dsonar.host.url=https://sonarcloud.io clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+  - "mvn -DskipTests=true -Dmaven.javadoc.skip=true -pl jooby -am -Dsonar.host.url=https://sonarcloud.io clean install org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
