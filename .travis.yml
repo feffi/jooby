@@ -1,5 +1,6 @@
 language: java
 dist: trusty
+#sudo: required
 
 cache:
   directories:
@@ -32,9 +33,9 @@ env:
     - SONAR_HOST_URL=https://sonarcloud.io
 
 stages:
-  - prepare
-  - compile
-  - dast
+  - lint
+  - build
+  - Static Application Sourcecode Analysis
 #  - test
 #  - coverage
 #
@@ -46,24 +47,17 @@ stages:
 jobs:
   include:
 
-######################################################################################################
-
-    - stage: prepare
+    - stage: lint
       script:
-        - "mvn dependency:resolve-plugins"
-
-    - stage: prepare
-      script:
-        - "mvn clean"
+        - "echo linting"
 
 ######################################################################################################
 
-    - stage: compile
+    - stage: build
       env:
         - MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
       script:
-        - "mvn compile"
-        #- "mvn compile -pl jooby -am"
+        - "mvn clean install"
 
 ######################################################################################################
 
@@ -81,11 +75,42 @@ jobs:
 
 ######################################################################################################
 
-    - stage: dast
+    # Architectural quality scan
+    - stage: Static Application Sourcecode Analysis
       env:
         - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
       script:
         - "mvn -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
+
+    # Dependency check (snyk)
+    - stage: Static Application Sourcecode Analysis
+      env:
+        - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
+      script:
+        - "echo dependency-check (snyk)"
+
+    # Dependency check (owasp)
+    - stage: Static Application Sourcecode Analysis
+      env:
+        - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
+      script:
+        - "echo dependency-check(owasp)"
+
+    # Dependency versions
+    - stage: Static Application Sourcecode Analysis
+      env:
+        - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
+      script:
+        - "echo dependency-versions"
+
+    # Taint path analysis
+    - stage: Static Application Sourcecode Analysis
+      env:
+        - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
+      script:
+        - "echo taint-analysis"
+
+
 
 #branches:
 #  only:
