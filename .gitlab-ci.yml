@@ -15,7 +15,7 @@ build:maven:
 
 quality:codequality:
   image: docker:stable
-  stage: coverage
+  stage: quality
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
