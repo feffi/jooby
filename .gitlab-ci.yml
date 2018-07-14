@@ -1,9 +1,37 @@
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_REF_NAME"'
+cache:
+#  key: "$CI_COMMIT_SHA-$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_REF_NAME"
+  paths:
+    - .m2
+    - target
+    - builds
+  untracked: true
+
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2 -Djava.awt.headless=true"
+
+# Debug and tracing.
+#  CI_DEBUG_TRACE: "true"
+#  GIT_DEBUG_LOOKUP: "1"
+#  GIT_TRACE: "1"
+#  GIT_TRACE_PACKET: "1"
+#  GIT_TRANSLOOP_DEBUG: "1"
+#  GIT_TRANSPORT_HELPER_DEBUG: "1"
+
+
 stages:
   - build
   #- test
   #- coverage
   - quality
   - security
+
+##########################################################
+# BUILD
+##########################################################
 
 build:maven:
   image: maven:3-jdk-8
@@ -12,6 +40,10 @@ build:maven:
   artifacts:
     paths:
       - target/*.jar
+
+##########################################################
+# QUALITY
+##########################################################
 
 quality:codequality:
   image: docker:stable
@@ -30,6 +62,10 @@ quality:codequality:
         "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
     paths: [gl-code-quality-report.json]
+
+##########################################################
+# SECURITY
+##########################################################
 
 security:retirejs:
   stage: security
