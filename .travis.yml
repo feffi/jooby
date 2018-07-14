@@ -51,6 +51,8 @@ jobs:
     - stage: prepare
       script:
         - "mvn dependency:resolve-plugins"
+
+    - stage: prepare
       script:
         - "mvn clean"
 
