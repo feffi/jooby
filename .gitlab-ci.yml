@@ -43,7 +43,7 @@ build:maven:
 # TEST
 ##########################################################
 
-build:maven:
+test:unit-testing:
   image: maven:3-jdk-8
   stage: test
   script: "mvn --batch-mode -DskipTests=false -Dmaven.javadoc.skip=true -B test"
