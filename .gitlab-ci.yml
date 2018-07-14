@@ -33,7 +33,7 @@ stages:
 build:maven:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -B package"
+  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -B clean install"
   artifacts:
     paths:
     - .
