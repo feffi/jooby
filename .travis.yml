@@ -38,7 +38,9 @@ env:
 
 
 stages:
-  - package
+  - rampupcache
+  - prepare
+  - compile
 #  - test
 #  - coverage
 #
@@ -52,12 +54,29 @@ jobs:
 
 ######################################################################################################
 
-    - stage: package
+    - stage: rampupcache
+      env:
+        #- MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
+      script:
+        - "mvn dependency:resolve-plugins"
+
+######################################################################################################
+
+    - stage: prepare
+      env:
+        #- MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
+      script:
+        - "mvn clean"
+
+######################################################################################################
+
+    - stage: compile
       env:
         - MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
       script:
-        #- "mvn clean install"
-        - "mvn clean install -pl jooby -am"
+        - "mvn compile"
+        #- "mvn compile -pl jooby -am"
+
 ######################################################################################################
 
 #    - stage: test
