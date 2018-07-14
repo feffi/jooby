@@ -33,7 +33,11 @@ stages:
 build:maven:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -q package -pl jooby -am -B"
+  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -q -pl jooby -am -B package"
+  artifacts:
+    paths:
+    - .
+    expire_in: 1 week
 
 ##########################################################
 # QUALITY
