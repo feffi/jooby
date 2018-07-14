@@ -390,11 +390,11 @@ public class MvcRoutes {
 
   private static String attrName(final Annotation annotation, final Method attr) {
     String name = attr.getName();
+    String scope = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, annotation.annotationType().getSimpleName());
     if (name.equals("value")) {
-      return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL,
-          annotation.annotationType().getSimpleName());
+      return scope;
     }
-    return annotation.annotationType().getSimpleName() + "." + name;
+    return scope + "." + name;
   }
 
   private static List<MediaType> produces(final Method method) {

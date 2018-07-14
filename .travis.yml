@@ -1,34 +1,35 @@
 language: java
 
-jdk:
-  - oraclejdk8
-  - oraclejdk9
-  - oraclejdk10
-  - openjdk7
-  - openjdk8
-  - openjdk9
-  - openjdk10
-  - openjdk11
-
-stages:
-  - package
-  - test
-  - coverage
-
 cache:
   directories:
-  - $HOME/.m2
+    - '$HOME/.m2'
+    - '$HOME/.sonar/cache'
 
-#before_install:
-#  - export MAVEN_OPTS=-Xmx1024m
+before_install:
+  - export MAVEN_OPTS=-Xmx1024m
 
-jobs:
-  include:
-    - stage: package
-      env:
-        - MAVEN_OPTS=-Xmx1024m -DskipTests=true -Dlogback.configurationFile=logback-travis.xml
-      script:
-        - "mvn clean install"
+jdk:
+  - oraclejdk8
+#  - oraclejdk9
+#  - oraclejdk10
+#  - openjdk7
+#  - openjdk8
+#  - openjdk9
+#  - openjdk10
+#  - openjdk11
+
+#stages:
+#  - package
+#  - test
+#  - coverage
+#
+#jobs:
+#  include:
+#    - stage: package
+#      env:
+#        - MAVEN_OPTS=-Xmx1024m -DskipTests=true -Dlogback.configurationFile=logback-travis.xml
+#      script:
+#        - "mvn clean install"
 #    - stage: test
 #      env:
 #        - MAVEN_OPTS=-Xmx1024m -Dlogback.configurationFile=logback-travis.xml
@@ -49,5 +50,13 @@ branches:
   only:
     - master
 
+script:
+  - ./build/travis.sh
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+addons:
+  sonarcloud:
+    organization: "jooby"
+    token: $SONAR_TOKEN
