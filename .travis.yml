@@ -16,19 +16,25 @@ jdk:
 #  - openjdk10
 #  - openjdk11
 
-before_install:
+#before_install:
   #- export MAVEN_OPTS="-Xmx1024m"
   #- export MAVEN_OPTS="-DskipTests=true -Dmaven.javadoc.skip=true ${MAVEN_OPTS}"
   #- export MAVEN_OPTS="-Dlogback.configurationFile=../../build/logback-travis.xml ${MAVEN_OPTS}"
-  - export MAVEN_OPTS="-Dcoverage.port=random ${MAVEN_OPTS}"
-  - export MAVEN_OPTS="-Dcoverage.securePort=random ${MAVEN_OPTS}"
-  - export MAVEN_OPTS="-Dsonar.host.url=https://sonarcloud.io ${MAVEN_OPTS}"
-  - export MAVEN_OPTS="-Dsonar.branch.name=${TRAVIS_BRANCH} ${MAVEN_OPTS}"
+  #- export MAVEN_OPTS="-Dcoverage.port=random ${MAVEN_OPTS}"
+  #- export MAVEN_OPTS="-Dcoverage.securePort=random ${MAVEN_OPTS}"
+  #- export MAVEN_OPTS="-Dsonar.host.url=https://sonarcloud.io ${MAVEN_OPTS}"
+  #- export MAVEN_OPTS="-Dsonar.branch.name=${TRAVIS_BRANCH} ${MAVEN_OPTS}"
 
 addons:
   sonarcloud:
     organization: $SONAR_ORGANIZATION
     token: $SONAR_TOKEN
+
+env:
+  - REQUIRED_HEAP=1024m
+  - SKIP_TESTS=true
+  - SKIP_JAVADOC=true
+
 
 stages:
   - package
@@ -40,9 +46,6 @@ stages:
  # mvn -Dsonar.login=fcff19dd0c924736522c14558e35bb96c326141b -Dsonar.organization=feffi-github -DskipTests=true -Dmaven.javadoc.skip=true -pl jooby -am -Dsonar.host.url=https://sonarcloud.io clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
   #- "mvn -pl jooby -am clean install org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
 
-
-
-
 jobs:
   include:
 
@@ -50,7 +53,7 @@ jobs:
 
     - stage: package
       env:
-        - MAVEN_OPTS=-Xmx1024m -DskipTests=true -Dlogback.configurationFile=logback-travis.xml
+        - MAVEN_OPTS=-Xmx${REQUIRED_HEAP} -DskipTests=${SKIP_TESTS} -Dmaven.javadoc.skip=${SKIP_JAVADOC} -Dlogback.configurationFile=logback-travis.xml
       script:
         #- "mvn clean install"
         - "mvn clean install -pl jooby -am"
