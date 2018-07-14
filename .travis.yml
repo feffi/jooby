@@ -88,10 +88,10 @@ jobs:
 ######################################################################################################
 
     - stage: sonarcloud
-          env:
-            - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
-          script:
-            - "mvn -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
+      env:
+        - MAVEN_OPTS=-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.login=${SONAR_TOKEN} -Dsonar.organization=${SONAR_ORGANIZATION}
+      script:
+        - "mvn -pl jooby -am org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
 
 #branches:
 #  only:
