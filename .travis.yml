@@ -44,6 +44,9 @@ stages:
  # mvn -Dsonar.login=fcff19dd0c924736522c14558e35bb96c326141b -Dsonar.organization=feffi-github -DskipTests=true -Dmaven.javadoc.skip=true -pl jooby -am -Dsonar.host.url=https://sonarcloud.io clean install org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
   #- "mvn -pl jooby -am clean install org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar"
 
+# disable the default travis "mvn install" step - we want to control that manually
+install: true
+
 jobs:
   include:
 
