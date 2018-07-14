@@ -1,7 +1,7 @@
 stages:
   - build
   #- test
-  - coverage
+  #- coverage
   - quality
   - security
 
@@ -32,7 +32,7 @@ quality:codequality:
     paths: [gl-code-quality-report.json]
 
 security:retirejs:
-  stage: pre-build
+  stage: security
   image: gruebel/retirejs
   allow_failure: true
   script:
