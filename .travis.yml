@@ -53,10 +53,8 @@ jobs:
 ######################################################################################################
 
     - stage: build
-      env:
-        - MAVEN_OPTS=-Xmx1024m -DskipTests=true -Dmaven.javadoc.skip=true -Dlogback.configurationFile=logback-travis.xml
       script:
-        - "mvn -q clean install"
+        - "mvn -q -Xmx1024m -DskipTests=true -Dmaven.javadoc.skip=true -Dlogback.configurationFile=logback-travis.xml clean install"
 
 ######################################################################################################
 
