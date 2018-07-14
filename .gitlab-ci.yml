@@ -20,11 +20,34 @@ variables:
 #  GIT_TRANSPORT_HELPER_DEBUG: "1"
 
 stages:
+  - prepare
   - build
   - test
   #- coverage
   - quality
   - security
+
+##########################################################
+# PREPARE
+##########################################################
+
+prepare:cacherampup:
+  image: maven:3-jdk-8
+  stage: prepare
+  script: "echo cache rampup"
+  artifacts:
+    paths:
+    - .
+    expire_in: 1 week
+
+prepare:linter:
+  image: maven:3-jdk-8
+  stage: prepare
+  script: "echo linter"
+  artifacts:
+    paths:
+    - .
+    expire_in: 1 week
 
 ##########################################################
 # BUILD
