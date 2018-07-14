@@ -2,16 +2,18 @@ stages:
   - build
   #- test
   - coverage
+  - quality
+  - security
 
-maven-build:
+build:maven:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn package -B"
+  script: "mvn package -pl jooby -am -B"
   artifacts:
     paths:
       - target/*.jar
 
-staticCodeAnalysis:
+quality:codequality:
   image: docker:stable
   stage: coverage
   variables:
@@ -28,3 +30,13 @@ staticCodeAnalysis:
         "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
   artifacts:
     paths: [gl-code-quality-report.json]
+
+security:retirejs:
+  stage: pre-build
+  image: gruebel/retirejs
+  allow_failure: true
+  script:
+    - retire --path . --outputformat json --includemeta
+  artifacts:
+    paths:
+      - ./retire.js-report/
