@@ -21,7 +21,7 @@ variables:
 
 stages:
   - build
-  #- test
+  - test
   #- coverage
   - quality
   - security
@@ -34,6 +34,19 @@ build:maven:
   image: maven:3-jdk-8
   stage: build
   script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -B clean install"
+  artifacts:
+    paths:
+    - .
+    expire_in: 1 week
+
+##########################################################
+# TEST
+##########################################################
+
+build:maven:
+  image: maven:3-jdk-8
+  stage: test
+  script: "mvn --batch-mode -DskipTests=false -Dmaven.javadoc.skip=true -B test"
   artifacts:
     paths:
     - .
