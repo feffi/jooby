@@ -43,9 +43,9 @@ prepare:cacherampup:
     expire_in: 1 week
 
 prepare:linter:
-  image: maven:3-jdk-8
+  image: codacy/codacy-pmdjava:latest
   stage: prepare
-  script: "echo linter"
+  script: "tini"
   artifacts:
     paths:
     - .
