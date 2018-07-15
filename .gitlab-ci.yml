@@ -10,7 +10,9 @@ cache:
   untracked: true
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2 -Djava.awt.headless=true"
+  DOCKER_DRIVER: overlay2
+  MAVEN_OPTS: "-XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Dmaven.repo.local=.m2 -Djava.awt.headless=true"
+  MAVEN_CMD: "mvn -T 1C --batch-mode --fail-fast"
 # Debug and tracing.
 #  CI_DEBUG_TRACE: "true"
 #  GIT_DEBUG_LOOKUP: "1"
@@ -56,7 +58,7 @@ prepare:linter:
 build:maven:
   image: maven:3-jdk-8
   stage: build
-  script: "mvn --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -B clean install"
+  script: "$MAVEN_CMD -DskipTests=true -Dmaven.javadoc.skip=true clean install"
   artifacts:
     paths:
     - .
@@ -69,7 +71,7 @@ build:maven:
 test:unit-testing:
   image: maven:3-jdk-8
   stage: test
-  script: "mvn --batch-mode -DskipTests=false -Dmaven.javadoc.skip=true -B test"
+  script: "$MAVEN_CMD -DskipTests=false -Dmaven.javadoc.skip=true test"
   artifacts:
     paths:
     - .
@@ -102,7 +104,7 @@ quality:codequality:
   stage: quality
   allow_failure: true
   script:
-    - mvn --batch-mode org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.branch.name=$CI_COMMIT_REF_NAME -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORGANIZATION
+    - "$MAVEN_CMD org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.branch.name=$CI_COMMIT_REF_NAME -Dsonar.host.url=$SONAR_URL -Dsonar.login=$SONAR_TOKEN -Dsonar.organization=$SONAR_ORGANIZATION"
 
 ##########################################################
 # SECURITY
